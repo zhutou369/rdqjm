@@ -11,5 +11,8 @@
   "description": "",
   "devDependencies": {
     "@11ty/eleventy": "^3.1.5"
+  },
+  "dependencies": {
+    "@google/genai": "^2.4.0"
   }
 }
