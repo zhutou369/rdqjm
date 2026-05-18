@@ -1,0 +1,97 @@
+---
+title: ws网页版登录
+layout: layout.njk
+pagination:
+  data: collections.blog
+  size: 10
+  alias: posts
+  reverse: true
+
+permalink: "blog/{% if pagination.pageNumber > 0 %}page-{{ pagination.pageNumber }}/{% endif %}index.html"
+---
+
+<!-- 
+   注意：因为使用了 layout: layout.njk，母版会自动生成 head、header 和 body 大框架。
+   这里我们只需要专注输出列表页的核心包裹器即可，样式会自动继承或补充。
+-->
+<main class="list-container" style="max-width: 900px; margin: 0 auto; padding: 10px 0;">
+    
+    <!-- 动态提示当前页码（只在第2页及以后显示），SEO 非常友好 -->
+    {% if pagination.pageNumber > 0 %}
+        <div style="color: #999; margin-bottom: 20px; font-size: 0.9rem;">
+            当前位置：<a href="/" style="color: #666; text-decoration: none;">首页</a> &gt; <a href="/blog/" style="color: #666; text-decoration: none;">文章列表</a> &gt; 第 {{ pagination.pageNumber + 1 }} 页
+        </div>
+    {% endif %}
+
+    <!-- 文章列表布局样式 -->
+    <style>
+        .article-list { display: flex; flex-direction: column; gap: 25px; margin-top: 20px; }
+        .article-item { 
+            padding: 20px; 
+            border-radius: 8px; 
+            background: #f8f9fa; 
+            border-left: 4px solid transparent;
+            transition: all 0.3s ease;
+        }
+        .article-item:hover { 
+            background: #fff; 
+            border-left-color: var(--accent-green, #128C7E); 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transform: translateX(4px);
+        }
+        .item-title { margin: 0 0 10px 0; font-size: 1.3rem; }
+        .item-title a { color: #222; text-decoration: none; transition: color 0.2s; }
+        .item-title a:hover { color: var(--accent-green, #128C7E); }
+        
+        .item-meta { color: #999; font-size: 0.85rem; display: flex; gap: 15px; }
+        .item-excerpt { color: #666; font-size: 0.95rem; margin-top: 10px; line-height: 1.6; }
+
+        .pagination-nav { display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 50px; padding-top: 30px; border-top: 2px solid #f4f4f4; }
+        .page-link { padding: 8px 16px; border: 1px solid #ddd; border-radius: 6px; color: #555; text-decoration: none; font-size: 0.95rem; transition: all 0.2s; }
+        .page-link:hover { border-color: var(--accent-green, #128C7E); color: var(--accent-green, #128C7E); background: #fff; }
+        .page-active { padding: 8px 16px; background: var(--main-green, #075E54); color: #fff; border: 1px solid var(--main-green, #075E54); border-radius: 6px; font-weight: bold; font-size: 0.95rem; }
+        .page-disabled { padding: 8px 16px; color: #ccc; border: 1px solid #eee; border-radius: 6px; cursor: not-allowed; }
+    </style>
+
+    <!-- 文章列表循环体 -->
+    <div class="article-list">
+        {% for post in posts %}
+        <article class="article-item">
+            <h2 class="item-title">
+                <a href="{{ post.url }}">{{ post.data.title }}</a>
+            </h2>
+            <div class="item-meta">
+                {% if post.date %}
+                <span>发布时间：{{ post.date.getFullYear() }}-{{ (post.date.getMonth()+1).toString().padStart(2, '0') }}-{{ post.date.getDate().toString().padStart(2, '0') }}</span>
+                {% endif %}
+            </div>
+            <div class="item-excerpt">
+                {{ post.templateContent | striptags | truncate(120) }}
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+
+    <!-- 分页导航 -->
+    <nav class="pagination-nav">
+        {% if pagination.href.previous %}
+            <a href="{{ pagination.href.previous }}" class="page-link">« 上一页</a>
+        {% else %}
+            <span class="page-disabled">« 上一页</span>
+        {% endif %}
+
+        {% for pageEntry in pagination.pages %}
+            {% if pagination.pageNumber == loop.index0 %}
+                <span class="page-active">{{ loop.index }}</span>
+            {% else %}
+                <a href="{{ pagination.hrefs[loop.index0] }}" class="page-link">{{ loop.index }}</a>
+            {% endif %}
+        {% endfor %}
+
+        {% if pagination.href.next %}
+            <a href="{{ pagination.href.next }}" class="page-link">下一页 »</a>
+        {% else %}
+            <span class="page-disabled">下一页 »</span>
+        {% endif %}
+    </nav>
+</main>

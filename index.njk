@@ -1,8 +1,6 @@
-
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WhatsApp网页版登录官方入口 - whatapp web</title>
@@ -19,15 +17,19 @@
         .sidebar { display: flex; flex-direction: column; gap: 20px; }
         .card { background: white; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; }
         h1, h2, h3 { color: var(--dark); }
-        .article p { margin-bottom: 1.5rem; text-indent: 2em; }
+        .article p { margin-bottom: 1.5rem; text-indent: 2em; text-align: justify; }
         .footer { background: white; border-top: 1px solid #e2e8f0; padding: 40px 20px; text-align: center; margin-top: 60px; }
         .tag { display: inline-block; background: #dcfce7; color: #166534; padding: 4px 12px; border-radius: 999px; font-size: 0.875rem; font-weight: 600; margin-bottom: 10px; }
+        
+        /* 侧边栏更多文章链接样式 */
+        .more-posts { display: block; margin-top: 15px; padding-top: 10px; border-top: 1px dashed #e2e8f0; text-align: right; font-size: 0.9rem; color: var(--dark); text-decoration: none; font-weight: bold; }
+        .more-posts:hover { color: var(--primary); }
     </style>
 </head>
 <body>
     <nav class="nav">
         <a href="/" class="logo">RDQJM.COM</a>
-        <div><a href="/ai1/" style="text-decoration:none; color:var(--slate)">技术博客</a></div>
+        <div><a href="/blog/" style="text-decoration:none; color:var(--slate); font-weight: 500;">技术博客</a></div>
     </nav>
     <div class="hero">
         <span class="tag">2026 官方最新指南</span>
@@ -54,32 +56,35 @@
                 <p>随着技术的迭代，<strong>whatapp网页版登录</strong>的功能边界正在不断扩充。RDQJM.COM始终致力于为您提供最前沿的教程。无论您是刚入行的新人，还是资深的海外营销专家，掌握<strong>whatsapp官方</strong>的网页端技巧，都是通往全球市场的第一步。2026年，让我们利用更智能的工具，重塑沟通效率。</p>
             </article>
         </main>
-     <aside class="sidebar">
-    <div class="card">
-        <h3>最新更新</h3>
-        <ul style="padding-left:20px; color:#64748b;">
-            {# 修正后的循环：确保标签完全闭合 #}
-            {% for post in collections.blog | reverse %}
-            <li style="margin-bottom:10px;">
-                <a href="{{ post.url }}" style="color:var(--dark); text-decoration:none;">
-                    {{ post.data.title }}
-                </a>
-            </li>
-            {% else %}
-            <li>暂无文章发布</li>
-            {% endfor %}
-        </ul>
+        
+        <aside class="sidebar">
+            <div class="card">
+                <h3>最新更新</h3>
+                <ul style="padding-left:20px; color:#64748b; margin-bottom: 0;">
+                        {% set count = 0 %}
+                        {% for post in collections.blog | reverse %}
+                            {% if count < 5 %}
+                                <li style="margin-bottom: 8px;">
+                                    <a href="{{ post.url }}" class="post-item" style="text-decoration:none; color:#334155;" title="{{ post.data.title }}">{{ post.data.title }}</a>
+                                </li>
+                                {% set count = count + 1 %}
+                            {% endif %}
+                        {% else %}
+                    <li>暂无文章发布</li>
+                    {% endfor %}
+                </ul>
+                <a href="/blog/" class="more-posts">查看更多文章 »</a>
+            </div>
+        </aside>
     </div>
-</aside>
-</div>
+    
     <footer class="footer">
         <p>友情链接：                <a href="https://qhqrl.com">whatsapp網頁版下载</a>
                 <a href="https://ctysd.cn">whats网页版登入</a>
                 <a href="https://qvfdc.com">WhatsApp 網頁版</a>
                 <a href="https://rcqry.com">whatapp web</a>
-                <a href="https://rdqjm.com">whatsapp在线登陆</a>
+                <a href="https://rdqjm.com">whatsapp在线登陆</a></p>
         <p>© 2026 RDQJM.COM 版权所有</p>
     </footer>
 </body>
 </html>
-    

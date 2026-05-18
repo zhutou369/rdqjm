@@ -1,38 +1,132 @@
+---
+# 这里是你的 Front Matter 配置，母版会自动渲染
+---
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ title }} - whats app web</title>
+    <meta name="keywords" content="whatsapp网页版登录, whatsapp官方, whatsapp网页版登入, whats app web">
     <style>
-        body { font-family: "Source Serif Pro", serif; background: #fafafa; color: #2d3436; margin: 0; line-height: 1.8; }
-        .post-wrapper { max-width: 800px; margin: 60px auto; background: white; padding: 60px; border: 1px solid #eee; }
-        h1 { font-size: 2.5rem; color: #075E54; margin-bottom: 10px; }
-        .meta { color: #b2bec3; font-style: italic; margin-bottom: 40px; border-bottom: 1px solid #eee; padding-bottom: 20px; }
-        .content h2 { color: #128C7E; margin-top: 40px; font-family: sans-serif; }
-        .nav-links { display: flex; justify-content: space-between; margin-top: 80px; padding-top: 20px; border-top: 1px solid #eee; font-family: sans-serif; }
-        .nav-links a { color: #128C7E; text-decoration: none; font-weight: 600; }
-        footer { text-align: center; padding: 40px; color: #636e72; font-size: 0.9rem; }
+        /* 页面基础样式 */
+        :root { --main-green: #075E54; --accent-green: #128C7E; --light-green: #25D366; --bg-gray: #f0f2f5; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.8; color: #333; margin: 0; background: var(--bg-gray); }
+        
+        .post-container { max-width: 900px; margin: 40px auto; background: #fff; padding: 45px; border-radius: 12px; box-shadow: 0 5px 25px rgba(0,0,0,0.05); }
+        
+        header { text-align: center; margin-bottom: 30px; }
+        header a { color: var(--main-green); text-decoration: none; font-weight: bold; font-size: 1.2rem; margin: 0 10px; }
+        header span { color: #ccc; }
+
+        h1 { color: var(--main-green); border-bottom: 2px solid #eee; padding-bottom: 20px; font-size: 2rem; margin-top: 0; }
+        .article-meta { color: #999; font-size: 0.9rem; margin-bottom: 30px; }
+        
+        .article-body { font-size: 1.1rem; color: #444; text-align: justify; }
+        .article-body h2 { color: var(--accent-green); border-left: 5px solid var(--light-green); padding-left: 15px; margin-top: 40px; }
+        .article-body p { margin-bottom: 20px; }
+
+        /* 互链导航组件 - 解决排版不对齐 */
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            align-items: stretch;
+            gap: 20px;
+            padding-top: 30px;
+            border-top: 2px solid #f4f4f4;
+            margin-top: 50px;
+        }
+        .nav-item {
+            flex: 1;
+            padding: 15px;
+            border-radius: 8px;
+            background: #f8f9fa;
+            text-decoration: none;
+            color: var(--accent-green);
+            transition: all 0.3s;
+            border: 1px solid transparent;
+            display: flex;
+            flex-direction: column;
+        }
+        .nav-item:hover {
+            background: #fff;
+            border-color: var(--accent-green);
+            box-shadow: 0 4px 12px rgba(18,140,126,0.1);
+        }
+        .nav-label { font-size: 0.8rem; color: #999; margin-bottom: 5px; }
+        .nav-title { font-weight: bold; font-size: 1rem; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+        .next { text-align: right; }
+
+        /* 站群随机互链 */
+        .footer-links { margin-top: 40px; padding: 20px; background: #fdfdfd; border-radius: 8px; text-align: center; border: 1px solid #eee; }
+        .footer-links strong { display: block; margin-bottom: 10px; color: #666; font-size: 0.9rem; }
+        .link-item { display: inline-block; margin: 5px 10px; color: #888; text-decoration: none; font-size: 14px; }
+        .link-item:hover { color: var(--light-green); }
+
+        @media (max-width: 600px) {
+            .nav-links { flex-direction: column; }
+        }
     </style>
+    
+    <script charset="UTF-8" id="LA_COLLECT" src="//sdk.51.la/js-sdk-pro.min.js"></script>
+    <script>LA.init({id:"3K7l95Zodr0uFrIN",ck:"3K7l95Zodr0uFrIN"})</script>
 </head>
 <body>
-    <article class="post-wrapper">
-        <header>
-            <h1>{{ title }}</h1>
-            <div class="meta">发布于: {{ date | dateFilter }} | 分类: 技术指引</div>
-        </header>
-        <div class="content">
+
+    <header>
+        <div style="padding: 20px;">
+            <a href="/">whats app web技术支持</a>
+            <span>|</span>
+            <a href="/blog/" style="color: var(--accent-green);">文章列表</a>
+        </div>
+    </header>
+
+    <article class="post-container">
+        <h1>{{ title }}</h1>
+        <div class="article-meta">{% if date %}发布日期：{{ date.getFullYear() }}-{{ (date.getMonth()+1).toString().padStart(2, '0') }}-{{ date.getDate().toString().padStart(2, '0') }}{% endif %}</div>
+        
+        <div class="article-body">
             {{ content | safe }}
         </div>
+
         <nav class="nav-links">
-            {% if prevPost %}<a href="{{ prevPost.url }}">← 上一篇: {{ prevPost.data.title }}</a>{% else %}<span></span>{% endif %}
-            {% if nextPost %}<a href="{{ nextPost.url }}">下一篇: {{ nextPost.data.title }} →</a>{% endif %}
+            <div style="flex: 1;">
+            {% if prevPost %}
+                <a href="{{ prevPost.url }}" class="nav-item prev">
+                    <span class="nav-label">上一篇文章</span>
+                    <span class="nav-title">{{ prevPost.data.title }}</span>
+                </a>
+            {% endif %}
+            </div>
+            
+            <div style="flex: 1;">
+            {% if nextPost %}
+                <a href="{{ nextPost.url }}" class="nav-item next">
+                    <span class="nav-label">下一篇文章</span>
+                    <span class="nav-title">{{ nextPost.data.title }}</span>
+                </a>
+            {% endif %}
+            </div>
         </nav>
+
+        <div class="footer-links">
+            <strong>推荐阅读</strong>
+            <div id="random-links-wrap">
+                <a href="https://qhqrl.com">whatsapp網頁版下载</a>
+                <a href="https://ctysd.cn">whats网页版登入</a>
+                <a href="https://qvfdc.com">WhatsApp 網頁版</a>
+                <a href="https://rcqry.com">whatapp web</a>
+                <a href="https://rdqjm.com">whatsapp在线登陆</a>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 40px; padding-bottom: 20px; font-size: 0.9rem;">
+            <a href="/" style="color: #999; text-decoration: none;">返回首页入口</a>
+            <span style="color: #ccc; margin: 0 10px;">•</span>
+            <a href="/blog/" style="color: var(--accent-green); text-decoration: none; font-weight: bold;">文章列表</a>
+        </div>
     </article>
-    <footer>
         <p><a href="/" style="color:#636e72">返回首页</a> | 隐私政策 | 联系我们</p>
         <p>RDQJM.COM - whats app web</p>
-    </footer>
 </body>
 </html>
-    
