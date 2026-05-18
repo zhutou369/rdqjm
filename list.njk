@@ -1,6 +1,8 @@
 ---
 title: ws网页版登录
 layout: layout.njk
+# 🎯 修复点 4：补齐列表页专有的描述元数据，杜绝继承母版时产生空白大漏洞
+description: "专业的 ws网页版登录 核心资讯大厅。为您实时聚合展示关于2026年WhatsApp多开策略、跨境防关联技术、官方最新升级公告等全量优质技术文章列表。"
 pagination:
   data: collections.blog
   size: 10
@@ -10,31 +12,27 @@ pagination:
 permalink: "blog/{% if pagination.pageNumber > 0 %}page-{{ pagination.pageNumber }}/{% endif %}index.html"
 ---
 
-<!-- 
-   注意：因为使用了 layout: layout.njk，母版会自动生成 head、header 和 body 大框架。
-   这里我们只需要专注输出列表页的核心包裹器即可，样式会自动继承或补充。
--->
 <main class="list-container" style="max-width: 900px; margin: 0 auto; padding: 10px 0;">
     
-    <!-- 动态提示当前页码（只在第2页及以后显示），SEO 非常友好 -->
+    <h1 style="display: none;">{{ title }}技术支持文章列表中心</h1>
+
     {% if pagination.pageNumber > 0 %}
         <div style="color: #999; margin-bottom: 20px; font-size: 0.9rem;">
             当前位置：<a href="/" style="color: #666; text-decoration: none;">首页</a> &gt; <a href="/blog/" style="color: #666; text-decoration: none;">文章列表</a> &gt; 第 {{ pagination.pageNumber + 1 }} 页
         </div>
     {% endif %}
 
-    <!-- 文章列表布局样式 -->
     <style>
         .article-list { display: flex; flex-direction: column; gap: 25px; margin-top: 20px; }
         .article-item { 
-            padding: 20px; 
+            padding: 20px;
             border-radius: 8px; 
             background: #f8f9fa; 
             border-left: 4px solid transparent;
             transition: all 0.3s ease;
         }
         .article-item:hover { 
-            background: #fff; 
+            background: #fff;
             border-left-color: var(--accent-green, #128C7E); 
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             transform: translateX(4px);
@@ -53,7 +51,6 @@ permalink: "blog/{% if pagination.pageNumber > 0 %}page-{{ pagination.pageNumber
         .page-disabled { padding: 8px 16px; color: #ccc; border: 1px solid #eee; border-radius: 6px; cursor: not-allowed; }
     </style>
 
-    <!-- 文章列表循环体 -->
     <div class="article-list">
         {% for post in posts %}
         <article class="article-item">
@@ -72,7 +69,6 @@ permalink: "blog/{% if pagination.pageNumber > 0 %}page-{{ pagination.pageNumber
         {% endfor %}
     </div>
 
-    <!-- 分页导航 -->
     <nav class="pagination-nav">
         {% if pagination.href.previous %}
             <a href="{{ pagination.href.previous }}" class="page-link">« 上一页</a>
