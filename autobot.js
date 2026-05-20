@@ -19,6 +19,39 @@ async function runAutoBot() {
     // 2. 初始化 Gemini 客户端
     const ai = new GoogleGenAI({ apiKey: apiKey });
 
+    // 🛡️ 【智慧重试核心】帶有指數退避機制的 Gemini 生成閉包函式
+    async function generateContentWithRetry(prompt, maxRetries = 3, initialDelay = 5000) {
+        let currentDelay = initialDelay;
+        
+        for (let i = 0; i < maxRetries; i++) {
+            try {
+                return await ai.models.generateContent({
+                    model: 'gemini-2.5-flash',
+                    contents: prompt,
+                });
+            } catch (error) {
+                // 兼容不同環境與 SDK 版本可能返回的錯誤格式（檢查狀態碼或錯誤描述文字）
+                const is503 = error.status === 503 || (error.message && error.message.includes('503'));
+                const is429 = error.status === 429 || (error.message && error.message.includes('429'));
+                
+                // 如果遇到 503 或 429，且重試次數尚未耗盡，執行原地靜默等待
+                if ((is503 || is429) && i < maxRetries - 1) {
+                    console.warn(`⚠️ [API 波動] 偵測到 ${is503 ? '503 伺服器擁塞' : '429 請求過多限流'}。`);
+                    console.warn(`💤 將在原地靜默等待 ${currentDelay / 1000} 秒後進行第 ${i + 1} 次自動重試...`);
+                    
+                    // 執行原地靜默等待
+                    await new Promise(resolve => setTimeout(resolve, currentDelay));
+                    
+                    // 指數級延長下一次的重試等待時間（5秒 -> 10秒 -> 20秒）
+                    currentDelay *= 2; 
+                    continue;
+                }
+                // 如果是其他致命錯誤（如 400 認證錯誤），或 3 次機會全部耗盡，則直接拋出錯誤中斷
+                throw error;
+            }
+        }
+    }
+
     // 文件路径切回标准的 .json 格式
     const jsonPath = path.join(__dirname, 'keywords.json');   
     const imagesPath = path.join(__dirname, 'images.txt'); 
@@ -101,7 +134,7 @@ async function runAutoBot() {
     
     【重要核心要求】：
     1. 请将本次的主题 "${currentTopic}" 翻译为一个干净、地道、用连字符隔开的【纯英文短语】，作为 URL 的别名（Slug）。
-    2. 字数严格控制在 1200 - 2000 字之间，多用结构化列表、二级标题（##）、三级标题（###）。
+    2. 字数严格控制在 1200 - 2000 字之间，多用结构化列表、二级标题（##）、三級标题（###）。
     3. 严格按以下 Markdown 格式输出头部元数据，禁止在最外层包含 \`\`\`markdown 包裹外壳，必须直接以 --- 开头：
 
     ---
@@ -121,10 +154,9 @@ async function runAutoBot() {
 
         try {
             console.log('正在连接 Gemini API 生产高质量内容...');
-            const response = await ai.models.generateContent({
-                model: 'gemini-2.5-flash',
-                contents: prompt,
-            });
+            
+            // 🔥 【關鍵修正】改用上方封裝的智慧重試閉包，防塞車限流
+            const response = await generateContentWithRetry(prompt, 3, 5000);
 
             const articleContent = response.text;
             if (!articleContent) {
