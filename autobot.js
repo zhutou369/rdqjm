@@ -129,8 +129,9 @@ async function runAutoBot() {
         }
 
         // 7. 构造终极 SEO Prompt 模板
+        // 🌟 核心修正：將 tags 修正為 ["blog", "SEO"]，與你的模板集合完全對齊，打通上下篇與列表頁數據流！
         const prompt = `
-    你是一个精通技术SEO和前沿网络技术的专家博主。请针对主题 "${currentTopic}" 撰写一篇深入、对用户有极高价值的原创文章。
+    你是一个精通技术SEO and 前沿网络技术的专家博主。请针对主题 "${currentTopic}" 撰写一篇深入、对用户有极高价值的原创文章。
     
     【重要核心要求】：
     1. 请将本次的主题 "${currentTopic}" 翻译为一个干净、地道、用连字符隔开的【纯英文短语】，作为 URL 的别名（Slug）。
@@ -141,9 +142,9 @@ async function runAutoBot() {
     title: "${currentTopic}"
     description: "针对${currentTopic}的专业技术解析与实操指南。"
     date: ${todayStr}
-    tags: ["posts", "SEO"]
+    tags: ["blog", "SEO"]
     layout: "layout.njk"
-    permalink: "/posts/${todayStr}-"你的纯英文短语"-${randomId}/index.html"
+    permalink: "/blog/${todayStr}-"你的纯英文短语"-${randomId}/index.html"
     ---
 
     【注意】：请务必将上面 permalink 里面的 "你的纯英文短语" 替换为你真正翻译出来的英文 Slug。不要保留引号。
@@ -155,7 +156,7 @@ async function runAutoBot() {
         try {
             console.log('正在连接 Gemini API 生产高质量内容...');
             
-            // 🔥 【關鍵修正】改用上方封裝的智慧重試閉包，防塞車限流
+            // 🔥 改用上方封装的智慧重试闭包，防塞车限流
             const response = await generateContentWithRetry(prompt, 3, 5000);
 
             const articleContent = response.text;
@@ -180,7 +181,6 @@ async function runAutoBot() {
         }
     }
 
-    // 🌟 【重构重点】：当所有的循环（如5次）全部执行完毕完毕后，再一次性回写成标准的 JSON 数组格式
     try {
         fs.writeFileSync(jsonPath, JSON.stringify(keywords, null, 2), 'utf-8');
         console.log(`\n📉 词库整体更新完毕！剩余可用关键词数: ${keywords.length}`);
