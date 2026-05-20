@@ -5,16 +5,16 @@ on:
   schedule:
     - cron: '01 2 * * *'
 
-  # 🎯 手动测试触发：允许在 GitHub 界面手动点击按钮，并配置 1-10 篇的可选下拉菜单
+  # 🎯 手动测试触发：允许在 GitHub 界面手动点击按钮，并配置 1-9 篇的可选下拉菜单
   workflow_dispatch:
     inputs:
       post_count:
         type: choice
-        description: '本次手动测试生成的文章数量（选择 1 - 10 篇）'
+        description: '本次手动测试生成的文章数量（选择 1 - 9 篇）'
         required: true
-        default: '5'
+        default: '1' # 🔥 默认修改为 1 篇作为安全垫
         options:
-          - '1'
+          - '1' # 🔥 可选范围已修改为 1 - 9 篇
           - '2'
           - '3'
           - '4'
@@ -23,7 +23,6 @@ on:
           - '7'
           - '8'
           - '9'
-          - '10'
 
 # 🚀 2026 规范：在全局显式注入强制使用 Node 24 的环境变量
 env:
